@@ -4,6 +4,7 @@ const app = express();
 app.use(express.json());
 
 const users = {};
+const categories = {};
 
 app.post('/user', (req, res) => {
   const { name } = req.body;
@@ -29,6 +30,27 @@ app.delete('/user/:user_id', (req, res) => {
 
 app.get('/users', (req, res) => {
   res.json(Object.values(users));
+});
+
+app.post('/category', (req, res) => {
+  const { name } = req.body;
+  if (!name)
+    return res.status(400).json({ error: 'Category name is required' });
+
+  const id = uuidv4();
+  categories[id] = { id, name };
+  res.status(201).json(categories[id]);
+});
+
+app.get('/category', (req, res) => {
+  res.json(Object.values(categories));
+});
+
+app.delete('/category/:category_id', (req, res) => {
+  const category = categories[req.params.category_id];
+  if (!category) return res.status(404).json({ error: 'Category not found' });
+  delete categories[req.params.category_id];
+  res.json({ message: 'Category deleted' });
 });
 
 const PORT = 3000;
