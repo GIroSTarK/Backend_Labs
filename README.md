@@ -20,3 +20,5 @@ npm install
 ```
 npm start
 ```
+
+Також можна перейти на задеплоєний застосунок по ось цьому [посиланню](https://lab2-backend-jsbd.onrender.com)
