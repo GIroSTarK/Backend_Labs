@@ -12,6 +12,20 @@ const sequelize = new Sequelize(
   }
 );
 
+const defineUser = require('./User');
+const defineCategory = require('./Category');
+const defineRecord = require('./Record');
+
+const User = defineUser(sequelize);
+const Category = defineCategory(sequelize);
+const Record = defineRecord(sequelize);
+
+User.hasMany(Record, { foreignKey: 'userId' });
+Record.belongsTo(User, { foreignKey: 'userId' });
+
+Category.hasMany(Record, { foreignKey: 'categoryId' });
+Record.belongsTo(Category, { foreignKey: 'categoryId' });
+
 const connectToDatabase = async () => {
   try {
     await sequelize.authenticate();
@@ -25,4 +39,10 @@ const connectToDatabase = async () => {
   }
 };
 
-module.exports = { sequelize, connectToDatabase };
+module.exports = {
+  sequelize,
+  connectToDatabase,
+  User,
+  Category,
+  Record,
+};

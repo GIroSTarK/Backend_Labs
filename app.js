@@ -3,7 +3,7 @@ const userRouter = require('./routes/userRouter');
 const usersRouter = require('./routes/usersRouter');
 const categoryRouter = require('./routes/categoryRouter');
 const recordRouter = require('./routes/recordRouter');
-const { connectToDatabase } = require('./config/db');
+const { connectToDatabase } = require('./models/index');
 
 const app = express();
 const PORT = 3000;
