@@ -1,4 +1,7 @@
 const { Sequelize } = require('sequelize');
+const defineUser = require('./User');
+const defineCategory = require('./Category');
+const defineRecord = require('./Record');
 require('dotenv').config();
 
 const sequelize = new Sequelize(
@@ -11,10 +14,6 @@ const sequelize = new Sequelize(
     dialect: 'postgres',
   }
 );
-
-const defineUser = require('./User');
-const defineCategory = require('./Category');
-const defineRecord = require('./Record');
 
 const User = defineUser(sequelize);
 const Category = defineCategory(sequelize);

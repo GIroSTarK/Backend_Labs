@@ -13,6 +13,10 @@ app.use('/user', userRouter);
 app.use('/users', usersRouter);
 app.use('/category', categoryRouter);
 app.use('/record', recordRouter);
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: err.message || 'Internal Server Error' });
+});
 
 const startServer = async () => {
   try {
