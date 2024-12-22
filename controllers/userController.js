@@ -12,10 +12,9 @@ const createUser = async (req, res, next) => {
 
 const loginUser = async (req, res, next) => {
   try {
-    const id = req.user.id;
     const { name, password } = req.body;
-    const user = await userService.loginUser(id, name, password);
-    res.status(201).json(user);
+    const token = await userService.loginUser(name, password);
+    res.json({ token });
   } catch (error) {
     next(error);
   }
@@ -32,8 +31,9 @@ const getUser = async (req, res, next) => {
 
 const deleteUser = async (req, res, next) => {
   try {
-    const user = await userService.deleteUser(req.params.userId);
-    res.json({ message: 'User deleted', user });
+    const id = req.user.id;
+    await userService.deleteUser(id);
+    res.status(204).send();
   } catch (error) {
     next(error);
   }

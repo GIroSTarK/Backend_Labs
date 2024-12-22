@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { User } = require('../models');
 const ApiError = require('../utils/ApiError');
@@ -20,18 +21,24 @@ class UserService {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await User.create({ name, hashedPassword });
-    return user;
+    const user = await User.create({ name, password: hashedPassword });
+    const userWithoutPassword = user.toJSON();
+    delete userWithoutPassword.password;
+    return userWithoutPassword;
   }
 
-  async loginUser(id, name, password) {
+  async loginUser(name, password) {
     if (!name) {
       throw new ApiError(400, 'Name is required');
     }
     if (!password) {
       throw new ApiError(400, 'Password is required');
     }
-    const user = await User.findByPk(id);
+    const user = await User.findOne({
+      where: {
+        name,
+      },
+    });
     if (!user) {
       throw new ApiError(404, 'User not found');
     }
@@ -56,13 +63,14 @@ class UserService {
   }
 
   async getAllUsers() {
-    return await User.findAll();
+    return await User.findAll({
+      attributes: { exclude: ['password'] },
+    });
   }
 
   async deleteUser(id) {
     const user = await this.getUser(id);
     await user.destroy();
-    return user;
   }
 }
 
