@@ -1,4 +1,5 @@
 const express = require('express');
+const ApiError = require('./utils/ApiError');
 const userRouter = require('./routes/userRouter');
 const usersRouter = require('./routes/usersRouter');
 const categoryRouter = require('./routes/categoryRouter');
@@ -14,8 +15,12 @@ app.use('/users', usersRouter);
 app.use('/category', categoryRouter);
 app.use('/record', recordRouter);
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ error: err.message || 'Internal Server Error' });
+  if (err instanceof ApiError) {
+    res.status(err.statusCode).json({ error: err.message });
+  } else {
+    console.error(err.stack);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 });
 
 const startServer = async () => {

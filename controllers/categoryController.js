@@ -1,22 +1,32 @@
 const categoryService = require('../services/CategoryService');
 
-const createCategory = (req, res) => {
-  const { name } = req.body;
-  if (!name)
-    return res.status(400).json({ error: 'Category name is required' });
-
-  const category = categoryService.createCategory(name);
-  res.status(201).json(category);
+const createCategory = async (req, res, next) => {
+  try {
+    const { categoryName } = req.body;
+    const category = await categoryService.createCategory(categoryName);
+    res.status(201).json(category);
+  } catch (error) {
+    next(error);
+  }
 };
 
-const getAllCategories = (req, res) => {
-  res.json(categoryService.getAllCategories());
+const getAllCategories = async (req, res, next) => {
+  try {
+    const categories = await categoryService.getAllCategories();
+    res.json(categories);
+  } catch (error) {
+    next(error);
+  }
 };
 
-const deleteCategory = (req, res) => {
-  const category = categoryService.deleteCategory(req.params.category_id);
-  if (!category) return res.status(404).json({ error: 'Category not found' });
-  res.json({ message: 'Category deleted' });
+const deleteCategory = async (req, res, next) => {
+  try {
+    const categoryId = req.params.category_id;
+    const category = await categoryService.deleteCategory(categoryId);
+    res.json({ message: 'Category deleted', category });
+  } catch (error) {
+    next(error);
+  }
 };
 
 module.exports = {

@@ -1,30 +1,30 @@
-const { v4: uuidv4 } = require('uuid');
+const { Category } = require('../models');
+const ApiError = require('../utils/ApiError');
 
 class CategoryService {
-  constructor() {
-    this.categories = {};
-  }
-
-  createCategory(name) {
-    const id = uuidv4();
-    const category = { id, name };
-    this.categories[id] = category;
+  async createCategory(categoryName) {
+    if (!categoryName) {
+      throw new ApiError(400, 'Category name is required');
+    }
+    const category = await Category.create({ categoryName });
     return category;
   }
 
-  getCategory(id) {
-    return this.categories[id] || null;
-  }
-
-  getAllCategories() {
-    return Object.values(this.categories);
-  }
-
-  deleteCategory(id) {
-    const category = this.getCategory(id);
-    if (category) {
-      delete this.categories[id];
+  async getCategory(id) {
+    const category = await Category.findByPk(id);
+    if (!category) {
+      throw new ApiError(404, 'Category not found');
     }
+    return category;
+  }
+
+  async getAllCategories() {
+    return await Category.findAll();
+  }
+
+  async deleteCategory(id) {
+    const category = await this.getCategory(id);
+    await category.destroy();
     return category;
   }
 }

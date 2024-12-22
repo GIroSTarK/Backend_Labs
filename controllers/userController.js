@@ -1,27 +1,40 @@
 const userService = require('../services/UserService');
 
-const createUser = (req, res) => {
-  const { name } = req.body;
-  if (!name) return res.status(400).json({ error: 'Name is required' });
-
-  const user = userService.createUser(name);
-  res.status(201).json(user);
+const createUser = async (req, res, next) => {
+  try {
+    const { name } = req.body;
+    const user = await userService.createUser(name);
+    res.status(201).json(user);
+  } catch (error) {
+    next(error);
+  }
 };
 
-const getUser = (req, res) => {
-  const user = userService.getUser(req.params.user_id);
-  if (!user) return res.status(404).json({ error: 'User not found' });
-  res.json(user);
+const getUser = async (req, res, next) => {
+  try {
+    const user = await userService.getUser(req.params.user_id);
+    res.json(user);
+  } catch (error) {
+    next(error);
+  }
 };
 
-const deleteUser = (req, res) => {
-  const user = userService.deleteUser(req.params.user_id);
-  if (!user) return res.status(404).json({ error: 'User not found' });
-  res.json({ message: 'User deleted' });
+const deleteUser = async (req, res, next) => {
+  try {
+    const user = await userService.deleteUser(req.params.user_id);
+    res.json({ message: 'User deleted', user });
+  } catch (error) {
+    next(error);
+  }
 };
 
-const getAllUsers = (req, res) => {
-  res.json(userService.getAllUsers());
+const getAllUsers = async (req, res, next) => {
+  try {
+    const users = await userService.getAllUsers();
+    res.json(users);
+  } catch (error) {
+    next(error);
+  }
 };
 
 module.exports = {

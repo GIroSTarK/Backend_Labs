@@ -1,45 +1,55 @@
 const recordService = require('../services/RecordService');
 
-const createRecord = (req, res) => {
-  const { userId, categoryId, amountOfExpenses } = req.body;
-  if (!userId || !categoryId || !amountOfExpenses) {
-    return res.status(400).json({ error: 'Invalid data' });
+const createRecord = async (req, res, next) => {
+  try {
+    const { userId, categoryId, amountOfExpenses } = req.body;
+
+    const record = await recordService.createRecord(
+      userId,
+      categoryId,
+      amountOfExpenses
+    );
+    res.status(201).json(record);
+  } catch (error) {
+    next(error);
   }
-
-  const record = recordService.createRecord(
-    userId,
-    categoryId,
-    amountOfExpenses
-  );
-  res.status(201).json(record);
 };
 
-const getRecord = (req, res) => {
-  const record = recordService.getRecord(req.params.record_id);
-  if (!record) return res.status(404).json({ error: 'Record not found' });
-  res.json(record);
-};
+const getRecord = async (req, res, next) => {
+  try {
+    const { record_id } = req.params;
 
-const deleteRecord = (req, res) => {
-  const record = recordService.deleteRecord(req.params.record_id);
-  if (!record) return res.status(404).json({ error: 'Record not found' });
-  res.json({ message: 'Record deleted' });
-};
-
-const getFilteredRecords = (req, res) => {
-  const { user_id, category_id } = req.query;
-
-  if (!user_id && !category_id) {
-    return res
-      .status(400)
-      .json({ error: 'user_id or category_id is required' });
+    const record = await recordService.getRecord(record_id);
+    res.json(record);
+  } catch (error) {
+    next(error);
   }
+};
 
-  const filter = {};
-  if (user_id) filter.userId = user_id;
-  if (category_id) filter.categoryId = category_id;
+const deleteRecord = async (req, res, next) => {
+  try {
+    const { record_id } = req.params;
 
-  res.json(recordService.getRecords(filter));
+    const deletedRecord = await recordService.deleteRecord(record_id);
+    res.json({ message: 'Record deleted', deletedRecord });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getFilteredRecords = async (req, res, next) => {
+  try {
+    const { user_id, category_id } = req.query;
+
+    const filter = {};
+    if (user_id) filter.userId = user_id;
+    if (category_id) filter.categoryId = category_id;
+
+    const records = await recordService.getRecords(filter);
+    res.json(records);
+  } catch (error) {
+    next(error);
+  }
 };
 
 module.exports = {

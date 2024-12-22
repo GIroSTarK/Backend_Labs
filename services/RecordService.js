@@ -1,42 +1,62 @@
-const { v4: uuidv4 } = require('uuid');
+const { Record, User, Category } = require('../models');
+const ApiError = require('../utils/ApiError');
 
 class RecordService {
-  constructor() {
-    this.records = {};
-  }
-
-  createRecord(userId, categoryId, amountOfExpenses) {
-    const id = uuidv4();
-    const date = new Date();
-    const record = { id, userId, categoryId, date, amountOfExpenses };
-    this.records[id] = record;
-    return record;
-  }
-
-  getRecord(id) {
-    return this.records[id] || null;
-  }
-
-  getRecords(filter = {}) {
-    let result = Object.values(this.records);
-
-    if (filter.userId) {
-      result = result.filter((record) => record.userId == filter.userId);
-    }
-    if (filter.categoryId) {
-      result = result.filter(
-        (record) => record.categoryId == filter.categoryId
+  async createRecord(userId, categoryId, expenseAmount) {
+    if (!userId || !categoryId || !expenseAmount) {
+      throw new ApiError(
+        400,
+        'All fields (userId, categoryId, expenseAmount) are required'
       );
     }
 
-    return result;
+    const user = await User.findByPk(userId);
+    if (!user) {
+      throw new ApiError(404, 'User not found');
+    }
+
+    const category = await Category.findByPk(categoryId);
+    if (!category) {
+      throw new ApiError(404, 'Category not found');
+    }
+
+    return await Record.create({
+      userId,
+      categoryId,
+      createdAt: new Date(),
+      expenseAmount,
+    });
   }
 
-  deleteRecord(id) {
-    const record = this.getRecord(id);
-    if (record) {
-      delete this.records[id];
+  async getRecord(id) {
+    const record = await Record.findByPk(id);
+    if (!record) {
+      throw new ApiError(404, 'Record not found');
     }
+    return record;
+  }
+
+  async getRecords(filter = {}) {
+    if (!filter.userId && !filter.categoryId) {
+      throw new ApiError(400, 'user_id or category_id is required');
+    }
+
+    const where = {};
+
+    if (filter.userId) {
+      where.userId = filter.userId;
+    }
+    if (filter.categoryId) {
+      where.categoryId = filter.categoryId;
+    }
+
+    const records = await Record.findAll({ where });
+    return records;
+  }
+
+  async deleteRecord(id) {
+    const record = await this.getRecord(id);
+    await record.destroy();
     return record;
   }
 }
