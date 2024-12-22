@@ -14,7 +14,7 @@ class UserService {
     if (!password) {
       throw new ApiError(400, 'Password is required');
     }
-    if (!password.length < 8) {
+    if (password.length < 8) {
       throw new ApiError(400, 'Password must be at least 8 characters');
     }
     if (!/\d/.test(password)) {
