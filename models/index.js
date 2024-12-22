@@ -19,13 +19,13 @@ const User = defineUser(sequelize);
 const Category = defineCategory(sequelize);
 const Record = defineRecord(sequelize);
 
-User.hasMany(Category, { foreignKey: 'userId' });
+User.hasMany(Category, { foreignKey: 'userId', onDelete: 'CASCADE' });
 Category.belongsTo(User, { foreignKey: 'userId' });
 
-User.hasMany(Record, { foreignKey: 'userId' });
+User.hasMany(Record, { foreignKey: 'userId', onDelete: 'CASCADE' });
 Record.belongsTo(User, { foreignKey: 'userId' });
 
-Category.hasMany(Record, { foreignKey: 'categoryId' });
+Category.hasMany(Record, { foreignKey: 'categoryId', onDelete: 'CASCADE' });
 Record.belongsTo(Category, { foreignKey: 'categoryId' });
 
 const connectToDatabase = async () => {
