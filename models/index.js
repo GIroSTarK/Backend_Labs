@@ -19,6 +19,9 @@ const User = defineUser(sequelize);
 const Category = defineCategory(sequelize);
 const Record = defineRecord(sequelize);
 
+User.hasMany(Category, { foreignKey: 'userId' });
+Category.belongsTo(User, { foreignKey: 'userId' });
+
 User.hasMany(Record, { foreignKey: 'userId' });
 Record.belongsTo(User, { foreignKey: 'userId' });
 
@@ -31,8 +34,6 @@ const connectToDatabase = async () => {
     console.log(
       'Connection to the database has been established successfully.'
     );
-    await sequelize.sync({ force: true });
-    console.log('Database synced.');
   } catch (error) {
     console.error('Unable to connect to the database:', error);
   }
