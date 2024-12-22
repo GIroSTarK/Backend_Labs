@@ -12,7 +12,7 @@ const createUser = async (req, res, next) => {
 
 const getUser = async (req, res, next) => {
   try {
-    const user = await userService.getUser(req.params.user_id);
+    const user = await userService.getUser(req.params.userId);
     res.json(user);
   } catch (error) {
     next(error);
@@ -21,7 +21,7 @@ const getUser = async (req, res, next) => {
 
 const deleteUser = async (req, res, next) => {
   try {
-    const user = await userService.deleteUser(req.params.user_id);
+    const user = await userService.deleteUser(req.params.userId);
     res.json({ message: 'User deleted', user });
   } catch (error) {
     next(error);

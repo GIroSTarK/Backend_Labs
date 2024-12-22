@@ -8,8 +8,8 @@ const {
 } = require('../controllers/recordController');
 
 router.post('/', createRecord);
-router.get('/:record_id', getRecord);
-router.delete('/:record_id', deleteRecord);
+router.get('/:recordId', getRecord);
+router.delete('/:recordId', deleteRecord);
 router.get('/', getFilteredRecords);
 
 module.exports = router;

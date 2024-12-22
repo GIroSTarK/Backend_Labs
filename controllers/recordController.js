@@ -17,9 +17,9 @@ const createRecord = async (req, res, next) => {
 
 const getRecord = async (req, res, next) => {
   try {
-    const { record_id } = req.params;
+    const { recordId } = req.params;
 
-    const record = await recordService.getRecord(record_id);
+    const record = await recordService.getRecord(recordId);
     res.json(record);
   } catch (error) {
     next(error);
@@ -28,9 +28,9 @@ const getRecord = async (req, res, next) => {
 
 const deleteRecord = async (req, res, next) => {
   try {
-    const { record_id } = req.params;
+    const { recordId } = req.params;
 
-    const deletedRecord = await recordService.deleteRecord(record_id);
+    const deletedRecord = await recordService.deleteRecord(recordId);
     res.json({ message: 'Record deleted', deletedRecord });
   } catch (error) {
     next(error);
@@ -39,11 +39,11 @@ const deleteRecord = async (req, res, next) => {
 
 const getFilteredRecords = async (req, res, next) => {
   try {
-    const { user_id, category_id } = req.query;
+    const { userId, categoryId } = req.query;
 
     const filter = {};
-    if (user_id) filter.userId = user_id;
-    if (category_id) filter.categoryId = category_id;
+    if (userId) filter.userId = userId;
+    if (categoryId) filter.categoryId = categoryId;
 
     const records = await recordService.getRecords(filter);
     res.json(records);

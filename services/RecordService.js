@@ -38,7 +38,7 @@ class RecordService {
 
   async getRecords(filter = {}) {
     if (!filter.userId && !filter.categoryId) {
-      throw new ApiError(400, 'user_id or category_id is required');
+      throw new ApiError(400, 'userId or categoryId is required');
     }
 
     const where = {};
