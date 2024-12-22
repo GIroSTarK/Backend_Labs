@@ -7,6 +7,9 @@ class UserService {
     if (!name) {
       throw new ApiError(400, 'Name is required');
     }
+    if (!password) {
+      throw new ApiError(400, 'Password is required');
+    }
     const existingUser = await User.findOne({
       where: {
         name,

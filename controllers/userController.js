@@ -2,8 +2,19 @@ const userService = require('../services/UserService');
 
 const createUser = async (req, res, next) => {
   try {
-    const { name } = req.body;
-    const user = await userService.createUser(name);
+    const { name, password } = req.body;
+    const user = await userService.createUser(name, password);
+    res.status(201).json(user);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const loginUser = async (req, res, next) => {
+  try {
+    const id = req.user.id;
+    const { name, password } = req.body;
+    const user = await userService.loginUser(id, name, password);
     res.status(201).json(user);
   } catch (error) {
     next(error);
@@ -39,6 +50,7 @@ const getAllUsers = async (req, res, next) => {
 
 module.exports = {
   createUser,
+  loginUser,
   getUser,
   deleteUser,
   getAllUsers,
