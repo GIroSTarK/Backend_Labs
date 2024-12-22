@@ -54,8 +54,15 @@ class CategoryService {
     });
   }
 
-  async deleteCategory(id) {
-    const category = await this.getCategory(id);
+  async deleteCategory(categoryId, userId) {
+    const user = await User.findByPk(userId);
+    if (!user) {
+      throw new ApiError(401, 'Only existing users can get delete categories');
+    }
+    const category = await this.getCategory(categoryId);
+    if (category.userId !== userId) {
+      throw new ApiError(403, 'Access denied');
+    }
     await category.destroy();
     return category;
   }

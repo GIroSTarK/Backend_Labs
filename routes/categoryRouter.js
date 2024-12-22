@@ -6,10 +6,11 @@ const {
   getAllCategories,
   deleteCategory,
 } = require('../controllers/categoryController');
+const authenticateToken = require('../middlewares/authMiddleware');
 
-router.post('/', createCategory);
-router.get('/:userId', getPersonalCategories);
+router.post('/', authenticateToken, createCategory);
+router.get('/personal', authenticateToken, getPersonalCategories);
 router.get('/', getAllCategories);
-router.delete('/:categoryId', deleteCategory);
+router.delete('/:categoryId', authenticateToken, deleteCategory);
 
 module.exports = router;

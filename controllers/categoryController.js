@@ -2,7 +2,8 @@ const categoryService = require('../services/CategoryService');
 
 const createCategory = async (req, res, next) => {
   try {
-    const { categoryName, userId, isPersonal = false } = req.body;
+    const userId = req.user.id;
+    const { categoryName, isPersonal = false } = req.body;
     const category = await categoryService.createCategory(
       categoryName,
       userId,
@@ -16,7 +17,7 @@ const createCategory = async (req, res, next) => {
 
 const getPersonalCategories = async (req, res, next) => {
   try {
-    const { userId } = req.params;
+    const userId = req.user.id;
     const categories = await categoryService.getPersonalCategories(userId);
     res.json(categories);
   } catch (error) {
@@ -35,8 +36,9 @@ const getAllCategories = async (req, res, next) => {
 
 const deleteCategory = async (req, res, next) => {
   try {
+    const userId = req.user.id;
     const categoryId = req.params.categoryId;
-    const category = await categoryService.deleteCategory(categoryId);
+    const category = await categoryService.deleteCategory(categoryId, userId);
     res.json({ message: 'Category deleted', category });
   } catch (error) {
     next(error);
