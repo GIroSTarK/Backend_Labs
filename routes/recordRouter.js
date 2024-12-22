@@ -9,7 +9,7 @@ const {
 
 router.post('/', createRecord);
 router.get('/:recordId', getRecord);
-router.delete('/:recordId', deleteRecord);
 router.get('/', getFilteredRecords);
+router.delete('/:recordId', deleteRecord);
 
 module.exports = router;

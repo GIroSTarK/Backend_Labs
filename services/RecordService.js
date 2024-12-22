@@ -12,7 +12,7 @@ class RecordService {
 
     const user = await User.findByPk(userId);
     if (!user) {
-      throw new ApiError(404, 'User not found');
+      throw new ApiError(404, 'Only existing users can make records');
     }
 
     const category = await Category.findByPk(categoryId);
@@ -28,24 +28,28 @@ class RecordService {
     });
   }
 
-  async getRecord(id) {
-    const record = await Record.findByPk(id);
+  async getRecord(recordId, userId) {
+    const user = await User.findByPk(userId);
+    if (!user) {
+      throw new ApiError(401, 'Only existing users can get records');
+    }
+    const record = await Record.findByPk(recordId);
     if (!record) {
       throw new ApiError(404, 'Record not found');
+    }
+    if (record.userId !== userId) {
+      throw new ApiError(403, 'Access denied');
     }
     return record;
   }
 
-  async getRecords(filter = {}) {
-    if (!filter.userId && !filter.categoryId) {
-      throw new ApiError(400, 'userId or categoryId is required');
+  async getRecords(userId, filter = {}) {
+    const user = await User.findByPk(userId);
+    if (!user) {
+      throw new ApiError(401, 'Only existing users can get records');
     }
+    const where = { userId };
 
-    const where = {};
-
-    if (filter.userId) {
-      where.userId = filter.userId;
-    }
     if (filter.categoryId) {
       where.categoryId = filter.categoryId;
     }
@@ -54,10 +58,16 @@ class RecordService {
     return records;
   }
 
-  async deleteRecord(id) {
-    const record = await this.getRecord(id);
+  async deleteRecord(recordId, userId) {
+    const user = await User.findByPk(userId);
+    if (!user) {
+      throw new ApiError(401, 'Only existing users can delete records');
+    }
+    const record = await this.getRecord(recordId, userId);
+    if (record.userId !== userId) {
+      throw new ApiError(403, 'Access denied');
+    }
     await record.destroy();
-    return record;
   }
 }
 

@@ -38,8 +38,8 @@ const deleteCategory = async (req, res, next) => {
   try {
     const userId = req.user.id;
     const categoryId = req.params.categoryId;
-    const category = await categoryService.deleteCategory(categoryId, userId);
-    res.json({ message: 'Category deleted', category });
+    await categoryService.deleteCategory(categoryId, userId);
+    res.status(204).send();
   } catch (error) {
     next(error);
   }

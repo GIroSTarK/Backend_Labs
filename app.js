@@ -5,6 +5,7 @@ const usersRouter = require('./routes/usersRouter');
 const categoryRouter = require('./routes/categoryRouter');
 const recordRouter = require('./routes/recordRouter');
 const { connectToDatabase } = require('./models/index');
+const authenticateToken = require('./middlewares/authMiddleware');
 
 const app = express();
 const PORT = 3000;
@@ -13,7 +14,7 @@ app.use(express.json());
 app.use('/user', userRouter);
 app.use('/users', usersRouter);
 app.use('/category', categoryRouter);
-app.use('/record', recordRouter);
+app.use('/record', authenticateToken, recordRouter);
 app.use((err, req, res, next) => {
   if (err instanceof ApiError) {
     res.status(err.statusCode).json({ error: err.message });
