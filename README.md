@@ -1,4 +1,4 @@
-# Лабораторна робота №3
+# Лабораторна робота №4
 
 ## Варіант
 
@@ -21,4 +21,4 @@ git clone https://github.com/GIroSTarK/Backend_Labs.git
 docker-compose up --build
 ```
 
-Також можна перейти на задеплоєний застосунок по ось цьому [посиланню](https://lab3-backend-fhj4.onrender.com)
+Також можна перейти на задеплоєний застосунок по ось цьому [посиланню](https://lab4-backend.onrender.com)
